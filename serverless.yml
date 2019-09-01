@@ -1,0 +1,29 @@
+service: shopping-cart-service
+
+frameworkVersion: ">=1.0.0 <2.0.0"
+
+package:
+  exclude:
+    - tests/**
+
+provider:
+  name: aws
+  region: ap-southeast-2
+  runtime: nodejs8.10
+  role: arn:aws:iam::664681850642:role/shopping-cart-service
+  apiKeys:
+    - shopping-cart-service-key
+
+functions:
+  shopping-cart:
+    handler: src/index.handler
+    name: shopping-cart-service
+    memorySize: 512
+    timeout: 300
+    description: "shopping-cart-service"
+    events:
+      - http:
+          path: init
+          method: post
+          cors: true
+          private: true
