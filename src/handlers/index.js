@@ -12,7 +12,8 @@ const findHandler = () => R.cond([
   // shoppingCart
   [isMatchEndpoint('GET', '/{cartId}'), shoppingCartHandler.getShoppingCart],
   [isMatchEndpoint('POST', '/init'), shoppingCartHandler.initializeShoppingCart],
-  [isMatchEndpoint('PUT', '/{cartId}/add'), shoppingCartHandler.addToShoppingCart],
+  [isMatchEndpoint('PUT', '/{cartId}/item'), shoppingCartHandler.addToShoppingCart],
+  [isMatchEndpoint('DELETE', '/{cartId}/item'), shoppingCartHandler.deleteFromShoppingCart],
 
   // productList
   [isMatchEndpoint('GET', '/products'), productListHandler.getProductList],

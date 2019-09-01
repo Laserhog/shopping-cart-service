@@ -28,6 +28,7 @@ const getShoppingCart = async (cartId) => {
 
 /**
  * Adds a quantity of a specified product to the shopping cart
+ * 
  * @param {string} cartId 
  * @param {string} productId 
  * @param {number} quantity
@@ -44,8 +45,26 @@ const addToShoppingCart = async (cartId, productId, quantity) => {
   return shoppingCart;
 };
 
+/**
+ * Removes the specifed product from the cart
+ * 
+ * @param {string} cartId
+ * @param {string} productId
+ * @returns {object} updated shopping cart 
+ */
+const deleteFromShoppingCart = async (cartId, productId) => {
+  const shoppingCart = await shoppingCartRepo.getCartById(cartId);
+
+  shoppingCart.removeItem(productId);
+
+  await shoppingCartRepo.putCart(shoppingCart);
+
+  return shoppingCart;
+};
+
 module.exports = {
   initializeShoppingCart,
   getShoppingCart,
-  addToShoppingCart
+  addToShoppingCart,
+  deleteFromShoppingCart
 };

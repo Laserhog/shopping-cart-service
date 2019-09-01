@@ -144,7 +144,7 @@ describe('ShoppingCart.entity', () => {
       });
     });
 
-    it('will not go below 0 quantity', () => {
+    it('will remove an item if quantity is 0 or less', () => {
       const shoppingCartData = {
         id: 'someId',
         items: [{
@@ -170,13 +170,7 @@ describe('ShoppingCart.entity', () => {
 
       expect(shoppingCart).to.deep.equal({
         id: 'someId',
-        items: [{
-          id: 'someProductId',
-          name: 'someProduct',
-          unitPrice: 12.45,
-          quantity: 0,
-          total: 0
-        }],
+        items: [],
         totalCost: 0,
         createdDate: 'someDate',
         lastUpdatedDate: now.toISOString()
@@ -184,4 +178,33 @@ describe('ShoppingCart.entity', () => {
     });
   });
   
+  describe('removeItem', () => {
+    it('will remove an item', () => {
+      const shoppingCartData = {
+        id: 'someId',
+        items: [{
+          id: 'someProductId',
+          name: 'someProduct',
+          unitPrice: 12.45,
+          quantity: 2,
+          total: 24.90
+        }],
+        totalCost: 24.90,
+        createdDate: 'someDate',
+        lastUpdatedDate: 'someDate'
+      };
+
+      const shoppingCart = new ShoppingCart(shoppingCartData);
+
+      shoppingCart.removeItem('someProductId');
+
+      expect(shoppingCart).to.deep.equal({
+        id: 'someId',
+        items: [],
+        totalCost: 0,
+        createdDate: 'someDate',
+        lastUpdatedDate: now.toISOString()
+      });
+    });
+  });
 });

@@ -86,7 +86,7 @@ describe('shoppingCart', () => {
     });
   });
 
-  describe('PUT /{cartId}/add', () => {
+  describe('PUT /{cartId}/item', () => {
     it('200 success', async () => {
       const shoppingCart = ShoppingCart.new();
       sandbox.stub(shoppingCartRepo, 'getCartById').resolves(shoppingCart);
@@ -94,7 +94,7 @@ describe('shoppingCart', () => {
 
       const response = await testHelper.executeEvent({
         httpMethod: 'PUT',
-        resourcePath: '/{cartId}/add',
+        resourcePath: '/{cartId}/item',
         pathParameters: shoppingCart.id,
         body: JSON.stringify({
           productId: 'product_91f12c45-5413-4283-bff0-76b7c5b0cf3a',
@@ -116,11 +116,56 @@ describe('shoppingCart', () => {
 
       const response = await testHelper.executeEvent({
         httpMethod: 'PUT',
-        resourcePath: '/{cartId}/add',
+        resourcePath: '/{cartId}/item',
         pathParameters: 'someId',
         body: JSON.stringify({
           productId: 'product_91f12c45-5413-4283-bff0-76b7c5b0cf3a',
           quantity: 2
+        })
+      });
+
+      expect(response).to.deep.equal({
+        isBase64Encoded: false,
+        headers: undefined,
+        statusCode: 500,
+        body: JSON.stringify(errorToThrow)
+      });
+    });
+  });
+
+  describe('DELETE /{cartId}/item', () => {
+    it('200 success', async () => {
+      const shoppingCart = ShoppingCart.new();
+      sandbox.stub(shoppingCartRepo, 'getCartById').resolves(shoppingCart);
+      sandbox.stub(shoppingCartRepo, 'putCart').resolves();
+
+      const response = await testHelper.executeEvent({
+        httpMethod: 'PUT',
+        resourcePath: '/{cartId}/item',
+        pathParameters: shoppingCart.id,
+        body: JSON.stringify({
+          productId: 'product_91f12c45-5413-4283-bff0-76b7c5b0cf3a'
+        })
+      });
+
+      expect(response).to.deep.equal({
+        isBase64Encoded: false,
+        headers: undefined,
+        statusCode: 200,
+        body: JSON.stringify(shoppingCart)
+      });
+    });
+
+    it('error', async () => {
+      const errorToThrow = { message: 'some error' };
+      sandbox.stub(shoppingCartRepo, 'getCartById').rejects(errorToThrow);
+
+      const response = await testHelper.executeEvent({
+        httpMethod: 'PUT',
+        resourcePath: '/{cartId}/item',
+        pathParameters: 'someId',
+        body: JSON.stringify({
+          productId: 'product_91f12c45-5413-4283-bff0-76b7c5b0cf3a'
         })
       });
 
