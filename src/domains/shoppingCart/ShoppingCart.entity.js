@@ -51,9 +51,23 @@ class ShoppingCart {
       this.items.push(item);
     } else item.quantity += quantity;
 
-    if (item.quantity < 0) item.quantity = 0;
+    if (item.quantity <= 0) {
+      this.items = R.reject(R.propEq('id', product.id), this.items);
+    } else item.total = +(item.quantity * product.unitPrice).toFixed(2);
 
-    item.total = +(item.quantity * product.unitPrice).toFixed(2);
+    const totalCost = R.reduce((acc, item) => acc + R.prop('total', item), 0, this.items);
+    this.totalCost = +(totalCost).toFixed(2);
+
+    this.lastUpdatedDate = new Date().toISOString();
+  };
+
+/**
+ * Removes the specified product from the items array
+ * 
+ * @param {string} productId 
+ */
+  removeItem (productId) {
+    this.items = R.reject(R.propEq('id', productId), this.items);
 
     const totalCost = R.reduce((acc, item) => acc + R.prop('total', item), 0, this.items);
     this.totalCost = +(totalCost).toFixed(2);

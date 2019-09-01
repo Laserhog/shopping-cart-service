@@ -1,5 +1,5 @@
 const R = require('ramda');
-const uuid = require('uuid/v4');
+const uuid = require('uuid');
 
 const { handler } = require('../src/index');
 
@@ -7,7 +7,7 @@ const { handler } = require('../src/index');
  * Replaces the first 8 characters of a guid with `ffffffff`
  * @returns {string} modified guid
  */
-const getTestUUID = () => R.replace(/^.{8}/, 'ffffffff', uuid());
+const getTestUUID = () => R.replace(/^.{8}/, 'ffffffff', uuid.v4());
 
 /**
  * Execute the handler with the provided paramaters

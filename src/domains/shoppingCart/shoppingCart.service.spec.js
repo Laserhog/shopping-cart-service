@@ -74,5 +74,31 @@ describe('shoppingCart.service', () => {
       expect(result).to.deep.equal(shoppingCart);
     });
   });
+
+  describe('deleteFromShoppingCart', () => {
+    it('will successfully remove an item and update the repo', async () => {
+      const shoppingCart = ShoppingCart.new();
+      const productId = 'someId';
+      sandbox.stub(shoppingCartRepo, 'getCartById').resolves(shoppingCart);
+      sandbox.stub(shoppingCartRepo, 'putCart').resolves();
+      sandbox.spy(shoppingCart, 'removeItem');
+
+      const result = await shoppingCartService.deleteFromShoppingCart(
+        shoppingCart.id,
+        productId
+      );
+
+      expect(shoppingCartRepo.getCartById.calledOnce).to.equal(true);
+      expect(shoppingCartRepo.getCartById.firstCall.args).to.deep.equal([shoppingCart.id]);
+
+      expect(shoppingCart.removeItem.calledOnce).to.equal(true);
+      expect(shoppingCart.removeItem.firstCall.args).to.deep.equal([productId]);
+
+      expect(shoppingCartRepo.putCart.calledOnce).to.equal(true);
+      expect(shoppingCartRepo.putCart.firstCall.args).to.deep.equal([shoppingCart]);
+
+      expect(result).to.deep.equal(shoppingCart);
+    });
+  });
   
 });

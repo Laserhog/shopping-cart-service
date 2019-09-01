@@ -33,8 +33,13 @@ functions:
           cors: true
           private: true
       - http:
-          path: '{cartId}/add'
+          path: '{cartId}/item'
           method: put
+          cors: true
+          private: true
+      - http:
+          path: '{cartId}/item'
+          method: delete
           cors: true
           private: true
       - http:

@@ -140,4 +140,56 @@ describe('shoppingCart.handler', () => {
       });
     });
   });
+
+  describe('deleteFromShoppingCart', () => {
+    it('will handle a successful response from the service', async () => {
+      const serviceResponse = { id: 'someId' };
+      sandbox.stub(shoppingCartService, 'deleteFromShoppingCart').resolves(serviceResponse);
+
+      const result = await shoppingCartHandler.deleteFromShoppingCart({
+        pathParameters: { cartId: 'someId' },
+        body: JSON.stringify({
+          productId: 'someId'
+        })
+      });
+
+      expect(shoppingCartService.deleteFromShoppingCart.calledOnce).to.equal(true);
+      expect(shoppingCartService.deleteFromShoppingCart.firstCall.args).to.deep.equal([
+        'someId',
+        'someId'
+      ]);
+
+      expect(result).to.deep.equal({
+        isBase64Encoded: false,
+        headers: undefined,
+        statusCode: 200,
+        body: JSON.stringify(serviceResponse)
+      });
+    });
+
+    it('will handle an error response from the service', async () => {
+      const errorToThrow = { message: 'some error' };
+      sandbox.stub(shoppingCartService, 'deleteFromShoppingCart').rejects(errorToThrow);
+
+      const result = await shoppingCartHandler.deleteFromShoppingCart({
+        pathParameters: { cartId: 'someId' },
+        body: JSON.stringify({
+          productId: 'someId'
+        })
+      });
+
+      expect(shoppingCartService.deleteFromShoppingCart.calledOnce).to.equal(true);
+      expect(shoppingCartService.deleteFromShoppingCart.firstCall.args).to.deep.equal([
+        'someId',
+        'someId'
+      ]);
+
+      expect(result).to.deep.equal({
+        isBase64Encoded: false,
+        headers: undefined,
+        statusCode: 500,
+        body: JSON.stringify(errorToThrow)
+      });
+    });
+  });
 });

@@ -39,6 +39,14 @@ const getShoppingCart = async (event) => {
   }
 };
 
+/**
+ * Adds an item to the shopping cart
+ * 
+ * @param {object} event - lambda event
+ * @param {object} event.pathParameters
+ * @param {string} event.pathParameters.cartId
+ * @param {string} event.body
+ */
 const addToShoppingCart = async (event) => {
   try {
     const body = JSON.parse(event.body);
@@ -46,7 +54,31 @@ const addToShoppingCart = async (event) => {
       event.pathParameters.cartId,
       body.productId,
       body.quantity
-      );
+    );
+    return buildSuccessfulLambdaResponse({
+      statusCode: 200,
+      result
+    });
+  } catch (error) {
+    return buildFailureLambdaResponse({ error });
+  }
+};
+
+/**
+ * Removes an item from the shopping cart
+ * 
+ * @param {object} event - lambda event
+ * @param {object} event.pathParameters
+ * @param {string} event.pathParameters.cartId
+ * @param {string} event.body
+ */
+const deleteFromShoppingCart = async (event) => {
+  try {
+    const body = JSON.parse(event.body);
+    const result = await shoppingCartService.deleteFromShoppingCart(
+      event.pathParameters.cartId,
+      body.productId
+    );
     return buildSuccessfulLambdaResponse({
       statusCode: 200,
       result
@@ -59,5 +91,6 @@ const addToShoppingCart = async (event) => {
 module.exports = {
   initializeShoppingCart,
   getShoppingCart,
-  addToShoppingCart
+  addToShoppingCart,
+  deleteFromShoppingCart
 };
