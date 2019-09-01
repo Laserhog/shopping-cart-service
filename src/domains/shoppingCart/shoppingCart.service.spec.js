@@ -24,4 +24,19 @@ describe('shoppingCart.service', () => {
       expect(result).to.be.instanceOf(ShoppingCart);
     });
   });
+
+  describe('getShoppingCart', () => {
+    it('will successfully get a shopping cart', async () => {
+      const shoppingCart = ShoppingCart.new();
+      sandbox.stub(shoppingCartRepo, 'getCartById').resolves(shoppingCart);
+
+      const result = await shoppingCartService.getShoppingCart(shoppingCart.id);
+
+      expect(shoppingCartRepo.getCartById.calledOnce).to.equal(true);
+      expect(shoppingCartRepo.getCartById.firstCall.args).to.deep.equal([shoppingCart.id]);
+
+      expect(result).to.be.instanceOf(ShoppingCart);
+      expect(result).to.deep.equal(shoppingCart);
+    });
+  });
 });

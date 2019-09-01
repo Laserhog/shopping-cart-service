@@ -1,15 +1,5 @@
-const { isMatchEndpoint, buildFailureLambdaResponse, buildSuccessfulLambdaResponse } = require('./utils');
+const { buildFailureLambdaResponse, buildSuccessfulLambdaResponse } = require('./utils');
 const { shoppingCartService }  = require('../domains/shoppingCart');
-
-/**
- * Gets handler mappings for the shoppingCartHandler.
- * The event object is passed into the provided function when the endpoint is matched.
- *
- * @returns list of Ramda conditions to check if endpoint matches and map to the function
- */
-const getHandlerMapping = () => [
-  [isMatchEndpoint('POST', '/init'), initializeShoppingCart]
-];
 
 /**
  * Initialize a shopping cart
@@ -28,7 +18,26 @@ const initializeShoppingCart = async () => {
   }
 };
 
+/**
+ * Gets the shopping cart of the specified id
+ * 
+ * @param {object} event - lambda event
+ * @param {object} event.pathParameters
+ * @param {string} event.pathParameters.cartId
+ */
+const getShoppingCart = async (event) => {
+  try {
+    const result = await shoppingCartService.getShoppingCart(event.pathParameters.cartId);
+    return buildSuccessfulLambdaResponse({
+      statusCode: 200,
+      result
+    });
+  } catch (error) {
+    return buildFailureLambdaResponse({ error });
+  }
+}
+
 module.exports = {
   initializeShoppingCart,
-  getHandlerMapping
+  getShoppingCart,
 };
