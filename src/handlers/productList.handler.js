@@ -2,6 +2,8 @@ const { buildFailureLambdaResponse, buildSuccessfulLambdaResponse } = require('.
 const { productListService } = require('../domains/productList');
 
 /**
+ * Gets the product list
+ * 
  * @returns {object} lambda success/failure response
  */
 const getProductList = () => {

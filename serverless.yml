@@ -5,6 +5,7 @@ frameworkVersion: ">=1.0.0 <2.0.0"
 package:
   exclude:
     - tests/**
+    - docs/**
 
 provider:
   name: aws

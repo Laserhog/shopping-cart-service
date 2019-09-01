@@ -1,5 +1,6 @@
 /**
  * Build a successful lambda response
+ * @returns {object} success response
  */
 const buildSuccessfulLambdaResponse = ({ statusCode, result, headers }) => ({
   isBase64Encoded: false,
@@ -10,6 +11,7 @@ const buildSuccessfulLambdaResponse = ({ statusCode, result, headers }) => ({
 
 /**
  * Build a failure lambda response
+ * @returns {object} failure response
  */
 const buildFailureLambdaResponse = ({ error, headers }) => ({
   isBase64Encoded: false,

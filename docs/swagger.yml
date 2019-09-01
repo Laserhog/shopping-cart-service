@@ -1,0 +1,290 @@
+swagger: '2.0'
+info:
+  version: '2019-09-01T11:43:12Z'
+  title: Shopping Cart Service
+host: v6fuagc57l.execute-api.ap-southeast-2.amazonaws.com
+basePath: /dev
+schemes:
+  - https
+
+paths:
+  /init:
+    post:
+      description: Initialize the cart
+      produces:
+        - application/json
+      security:
+        - apiKey: []
+      responses:
+        201:
+          description: 201 Created
+          schema:
+            $ref: '#/definitions/ShoppingCart'
+        500:
+          description: 500 Internal Server Error
+          schema:
+            $ref: '#/definitions/InternalServerError'
+        502:
+          description: 502 Bad Gateway Error
+          schema:
+            $ref: '#/definitions/BadGatewayError'
+
+  /{cartId}:
+    get:
+      description: Get the cart
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          type: string
+          description: |
+            - Cart ID to get
+            - Format: cart_{guid}
+            - Example: cart_ffffffff-ffff-ffff-ffff-ffffffffffff
+      produces:
+        - application/json
+      security:
+        - apiKey: []
+      responses:
+        200:
+          description: 200 OK
+          schema:
+            $ref: '#/definitions/ShoppingCart'
+        404:
+          description: 404 Not Found Error
+          schema:
+            $ref: '#/definitions/NotFoundError'
+        500:
+          description: 500 Internal Server Error
+          schema:
+            $ref: '#/definitions/InternalServerError'
+        502:
+          description: 502 Bad Gateway Error
+          schema:
+            $ref: '#/definitions/BadGatewayError'
+
+  /{cartId}/item:
+    put:
+      description: Puts an item in the cart
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          type: string
+          description: |
+            - Cart ID to get
+            - Format: cart_{guid}
+            - Example: cart_ffffffff-ffff-ffff-ffff-ffffffffffff
+        - name: payload
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/PutItemPayload'
+      produces:
+        - application/json
+      security:
+        - apiKey: []
+      responses:
+        200:
+          description: 200 OK
+          schema:
+            $ref: '#/definitions/ShoppingCart'
+        404:
+          description: 404 Not Found Error
+          schema:
+            $ref: '#/definitions/NotFoundError'
+        500:
+          description: 500 Internal Server Error
+          schema:
+            $ref: '#/definitions/InternalServerError'
+        502:
+          description: 502 Bad Gateway Error
+          schema:
+            $ref: '#/definitions/BadGatewayError'
+
+    delete:
+      description: Deletes an item from the cart
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          type: string
+          description: |
+            - Cart ID to get
+            - Format: cart_{guid}
+            - Example: cart_ffffffff-ffff-ffff-ffff-ffffffffffff
+        - name: payload
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/DeleteItemPayload'
+      produces:
+        - application/json
+      security:
+        - apiKey: []
+      responses:
+        200:
+          description: 200 OK
+          schema:
+            $ref: '#/definitions/ShoppingCart'
+        404:
+          description: 404 Not Found Error
+          schema:
+            $ref: '#/definitions/NotFoundError'
+        500:
+          description: 500 Internal Server Error
+          schema:
+            $ref: '#/definitions/InternalServerError'
+        502:
+          description: 502 Bad Gateway Error
+          schema:
+            $ref: '#/definitions/BadGatewayError'
+
+  /products:
+    get:
+      description: Gets the product list
+      produces:
+        - application/json
+      security:
+        - apiKey: []
+      responses:
+        200:
+          description: 200 OK
+          schema:
+            $ref: '#/definitions/ProductList'
+        500:
+          description: 500 Internal Server Error
+          schema:
+            $ref: '#/definitions/InternalServerError'
+
+definitions:
+  DeleteItemPayload:
+    type: object
+    properties:
+      productId:
+        description: ID of product to add
+        type: string
+        example: product_ffffffff-ffff-ffff-ffff-ffffffffffff
+
+  PutItemPayload:
+    type: object
+    properties:
+      productId:
+        description: ID of product to add
+        type: string
+        example: product_ffffffff-ffff-ffff-ffff-ffffffffffff
+      quantity:
+        description: Quantity of product to add
+        type: number
+        example: 2
+
+  ProductList:
+    type: array
+    items:
+      $ref: '#/definitions/Product'
+
+  Product:
+    type: object
+    properties:
+      id:
+        description: Product ID
+        type: string
+        example: product_ffffffff-ffff-ffff-ffff-ffffffffffff
+      name:
+        description: Product name
+        type: string
+        example: Hammer
+      unitPrice:
+        description: Price per unit
+        type: number
+        example: 12.45
+
+  ShoppingCart:
+    type: object
+    properties:
+      id:
+        description: Shopping Cart ID
+        type: string
+        example: cart_ffffffff-ffff-ffff-ffff-ffffffffffff
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/CartItem'
+      totalCost:
+        description: Total cost of all items in cart
+        type: number
+        example: 24.90
+      createdDate:
+        description: Date the cart was made
+        type: string
+        example: '2019-09-01T08:09:11.454Z'
+      lastUpdatedDate:
+        description: Date the cart was last updated
+        type: string
+        example: '2019-09-01T08:09:11.454Z'
+
+  CartItem:
+    type: object
+    properties:
+      id:
+        description: Product ID
+        type: string
+        example: product_ffffffff-ffff-ffff-ffff-ffffffffffff
+      name:
+        description: Product name
+        type: string
+        example: Hammer
+      unitPrice:
+        description: Price per unit
+        type: number
+        example: 12.45
+      quantity:
+        description: Quantity of product in cart
+        type: number
+        example: 2
+      total:
+        description: Total price of cart item
+        type: number
+        example: 24.90
+
+  NotFoundError:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Not Found Error
+      code:
+        type: number
+        example: 5
+      moreInfo:
+        type: object
+
+  InternalServerError:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Internal Server Error
+      code:
+        type: number
+        example: 5
+      moreInfo:
+        type: object
+
+  BadGatewayError:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Bad Gateway Error
+      code:
+        type: number
+        example: 5
+      moreInfo:
+        type: object
+
+securityDefinitions:
+    apiKey:
+        type: "apiKey"
+        name: "x-api-key"
+        in: "header"
