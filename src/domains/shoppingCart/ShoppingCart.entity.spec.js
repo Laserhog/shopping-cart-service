@@ -58,4 +58,130 @@ describe('ShoppingCart.entity', () => {
       });
     });
   });
+
+  describe('addItem', () => {
+    it('will add to an existing item', () => {
+      const shoppingCartData = {
+        id: 'someId',
+        items: [{
+          id: 'someProductId',
+          name: 'someProduct',
+          unitPrice: 12.45,
+          quantity: 2,
+          total: 24.90
+        }],
+        totalCost: 24.90,
+        createdDate: 'someDate',
+        lastUpdatedDate: 'someDate'
+      };
+
+      const shoppingCart = new ShoppingCart(shoppingCartData);
+      const product = {
+        id: 'someProductId',
+        name: 'someProduct',
+        unitPrice: 12.45
+      };
+      
+      shoppingCart.addItem(product, 2);
+
+      expect(shoppingCart).to.deep.equal({
+        id: 'someId',
+        items: [{
+          id: 'someProductId',
+          name: 'someProduct',
+          unitPrice: 12.45,
+          quantity: 4,
+          total: 49.8
+        }],
+        totalCost: 49.8,
+        createdDate: 'someDate',
+        lastUpdatedDate: now.toISOString()
+      });
+    });
+
+    it('will add a new item', () => {
+      const shoppingCartData = {
+        id: 'someId',
+        items: [{
+          id: 'someProductId',
+          name: 'someProduct',
+          unitPrice: 12.45,
+          quantity: 2,
+          total: 24.90
+        }],
+        totalCost: 24.90,
+        createdDate: 'someDate',
+        lastUpdatedDate: 'someDate'
+      };
+
+      const shoppingCart = new ShoppingCart(shoppingCartData);
+      const product = {
+        id: 'someOtherProductId',
+        name: 'someOtherProduct',
+        unitPrice: 15.95
+      };
+
+      shoppingCart.addItem(product, 3);
+
+      expect(shoppingCart).to.deep.equal({
+        id: 'someId',
+        items: [{
+          id: 'someProductId',
+          name: 'someProduct',
+          unitPrice: 12.45,
+          quantity: 2,
+          total: 24.90
+        }, {
+          id: 'someOtherProductId',
+          name: 'someOtherProduct',
+          unitPrice: 15.95,
+          quantity: 3,
+          total: 47.85
+        }],
+        totalCost: 72.75,
+        createdDate: 'someDate',
+        lastUpdatedDate: now.toISOString()
+      });
+    });
+
+    it('will not go below 0 quantity', () => {
+      const shoppingCartData = {
+        id: 'someId',
+        items: [{
+          id: 'someProductId',
+          name: 'someProduct',
+          unitPrice: 12.45,
+          quantity: 2,
+          total: 24.90
+        }],
+        totalCost: 24.90,
+        createdDate: 'someDate',
+        lastUpdatedDate: 'someDate'
+      };
+
+      const shoppingCart = new ShoppingCart(shoppingCartData);
+      const product = {
+        id: 'someProductId',
+        name: 'someProduct',
+        unitPrice: 12.45
+      };
+      
+      shoppingCart.addItem(product, -3);
+
+      expect(shoppingCart).to.deep.equal({
+        id: 'someId',
+        items: [{
+          id: 'someProductId',
+          name: 'someProduct',
+          unitPrice: 12.45,
+          quantity: 0,
+          total: 0
+        }],
+        totalCost: 0,
+        createdDate: 'someDate',
+        lastUpdatedDate: now.toISOString()
+      });
+    });
+  });
+  
 });

@@ -10,7 +10,7 @@ const initializeShoppingCart = async () => {
   try {
     const result = await shoppingCartService.initializeShoppingCart();
     return buildSuccessfulLambdaResponse({
-      statusCode: 200,
+      statusCode: 201,
       result
     });
   } catch (error) {
@@ -27,7 +27,9 @@ const initializeShoppingCart = async () => {
  */
 const getShoppingCart = async (event) => {
   try {
-    const result = await shoppingCartService.getShoppingCart(event.pathParameters.cartId);
+    const result = await shoppingCartService.getShoppingCart(
+      event.pathParameters.cartId
+    );
     return buildSuccessfulLambdaResponse({
       statusCode: 200,
       result
@@ -35,9 +37,27 @@ const getShoppingCart = async (event) => {
   } catch (error) {
     return buildFailureLambdaResponse({ error });
   }
-}
+};
+
+const addToShoppingCart = async (event) => {
+  try {
+    const body = JSON.parse(event.body);
+    const result = await shoppingCartService.addToShoppingCart(
+      event.pathParameters.cartId,
+      body.productId,
+      body.quantity
+      );
+    return buildSuccessfulLambdaResponse({
+      statusCode: 200,
+      result
+    });
+  } catch (error) {
+    return buildFailureLambdaResponse({ error });
+  }
+};
 
 module.exports = {
   initializeShoppingCart,
   getShoppingCart,
+  addToShoppingCart
 };

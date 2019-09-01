@@ -1,0 +1,37 @@
+[
+  {
+    "id": "product_91f12c45-5413-4283-bff0-76b7c5b0cf3a",
+    "name": "Sledgehammer",
+    "unitPrice": 125.76
+  },
+  {
+    "id": "product_3d81b5bb-be06-4f33-9817-8c26fa6d371f",
+    "name": "Axe",
+    "unitPrice": 190.51
+  },
+  {
+    "id": "product_a9e4a1ce-0746-4504-8032-3c118845df8f",
+    "name": "Bandsaw",
+    "unitPrice": 562.14
+  },
+  {
+    "id": "product_42fc1532-d342-41d1-a7fd-ed8ed5ac39f2",
+    "name": "Chisel",
+    "unitPrice": 13.9
+  },
+  {
+    "id": "product_d6c95800-ea99-4bd4-b90b-fbd8302cfba9",
+    "name": "Hacksaw",
+    "unitPrice": 19.45
+  },
+  {
+    "id": "product_0083aff8-016c-4162-afff-464b4e046857",
+    "name": "Hammer",
+    "unitPrice": 12.78
+  },
+  {
+    "id": "product_a95a1e01-540d-49a5-9c54-18457d395d9d",
+    "name": "Screwdriver",
+    "unitPrice": 9.75
+  }
+]
