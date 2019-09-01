@@ -1,3 +1,4 @@
+const R = require('ramda');
 const uuid = require('uuid');
 
 class ShoppingCart {
@@ -7,7 +8,8 @@ class ShoppingCart {
    * @param {object} shoppingCartData
    * @param {string} shoppingCartData.id cart_{guid}
    * @param {array} shoppingCartData.items
-   * @param {string} shoppingCartData.items.productName
+   * @param {string} shoppingCartData.items.id
+   * @param {string} shoppingCartData.items.name
    * @param {number} shoppingCartData.items.price
    * @param {number} shoppingCartData.items.quantity
    * @param {number} shoppingCartData.items.total
@@ -33,6 +35,30 @@ class ShoppingCart {
       createdDate: currentDate,
       lastUpdatedDate: currentDate
     });
+  };
+
+  /**
+   * Adds a quantity of a product to the shopping cart
+   * 
+   * @param {object} product
+   * @param {number} quantity 
+   */
+  addItem (product, quantity) {
+    let item = R.find(R.propEq('id', product.id), this.items);
+
+    if (R.isNil(item)) {
+      item = { ...product, quantity }
+      this.items.push(item);
+    } else item.quantity += quantity;
+
+    if (item.quantity < 0) item.quantity = 0;
+
+    item.total = +(item.quantity * product.unitPrice).toFixed(2);
+
+    const totalCost = R.reduce((acc, item) => acc + R.prop('total', item), 0, this.items);
+    this.totalCost = +(totalCost).toFixed(2);
+
+    this.lastUpdatedDate = new Date().toISOString();
   };
 };
 

@@ -12,7 +12,7 @@ describe('shoppingCart', () => {
   });
 
   describe('POST /init', () => {
-    it('200 success', async () => {
+    it('201 success', async () => {
       const shoppingCart = ShoppingCart.new();
       sandbox.stub(ShoppingCart, 'new').returns(shoppingCart);
       sandbox.stub(shoppingCartRepo, 'putCart').resolves();
@@ -22,16 +22,12 @@ describe('shoppingCart', () => {
         resourcePath: '/init'
       });
   
-      expect(response).to.have.keys([
-        'isBase64Encoded',
-        'headers',
-        'statusCode',
-        'body'
-      ]);
-      expect(response.isBase64Encoded).to.equal(false);
-      expect(response.headers).to.equal(undefined);
-      expect(response.statusCode).to.equal(200);
-      expect(response.body).to.equal(JSON.stringify(shoppingCart));
+      expect(response).to.deep.equal({
+        isBase64Encoded: false,
+        headers: undefined,
+        statusCode: 201,
+        body: JSON.stringify(shoppingCart)
+      });
     });
 
     it('error', async () => {
@@ -43,23 +39,18 @@ describe('shoppingCart', () => {
         resourcePath: '/init'
       });
 
-      expect(response).to.have.keys([
-        'isBase64Encoded',
-        'headers',
-        'statusCode',
-        'body'
-      ]);
-      expect(response.isBase64Encoded).to.equal(false);
-      expect(response.headers).to.equal(undefined);
-      expect(response.statusCode).to.equal(500);
-      expect(response.body).to.equal(JSON.stringify(errorToThrow));
+      expect(response).to.deep.equal({
+        isBase64Encoded: false,
+        headers: undefined,
+        statusCode: 500,
+        body: JSON.stringify(errorToThrow)
+      });
     });
   });
 
   describe('GET /{cartId}', () => {
     it('200 success', async () => {
       const shoppingCart = ShoppingCart.new();
-      sandbox.stub(ShoppingCart, 'new').returns(shoppingCart);
       sandbox.stub(shoppingCartRepo, 'getCartById').resolves(shoppingCart);
 
       const response = await testHelper.executeEvent({
@@ -68,16 +59,12 @@ describe('shoppingCart', () => {
         pathParameters: shoppingCart.id
       });
   
-      expect(response).to.have.keys([
-        'isBase64Encoded',
-        'headers',
-        'statusCode',
-        'body'
-      ]);
-      expect(response.isBase64Encoded).to.equal(false);
-      expect(response.headers).to.equal(undefined);
-      expect(response.statusCode).to.equal(200);
-      expect(response.body).to.equal(JSON.stringify(shoppingCart));
+      expect(response).to.deep.equal({
+        isBase64Encoded: false,
+        headers: undefined,
+        statusCode: 200,
+        body: JSON.stringify(shoppingCart)
+      });
     });
 
     it('error', async () => {
@@ -90,16 +77,59 @@ describe('shoppingCart', () => {
         pathParameters: 'someId'
       });
 
-      expect(response).to.have.keys([
-        'isBase64Encoded',
-        'headers',
-        'statusCode',
-        'body'
-      ]);
-      expect(response.isBase64Encoded).to.equal(false);
-      expect(response.headers).to.equal(undefined);
-      expect(response.statusCode).to.equal(500);
-      expect(response.body).to.equal(JSON.stringify(errorToThrow));
+      expect(response).to.deep.equal({
+        isBase64Encoded: false,
+        headers: undefined,
+        statusCode: 500,
+        body: JSON.stringify(errorToThrow)
+      });
+    });
+  });
+
+  describe('PUT /{cartId}/add', () => {
+    it('200 success', async () => {
+      const shoppingCart = ShoppingCart.new();
+      sandbox.stub(shoppingCartRepo, 'getCartById').resolves(shoppingCart);
+      sandbox.stub(shoppingCartRepo, 'putCart').resolves();
+
+      const response = await testHelper.executeEvent({
+        httpMethod: 'PUT',
+        resourcePath: '/{cartId}/add',
+        pathParameters: shoppingCart.id,
+        body: JSON.stringify({
+          productId: 'product_91f12c45-5413-4283-bff0-76b7c5b0cf3a',
+          quantity: 2
+        })
+      });
+
+      expect(response).to.deep.equal({
+        isBase64Encoded: false,
+        headers: undefined,
+        statusCode: 200,
+        body: JSON.stringify(shoppingCart)
+      });
+    });
+
+    it('error', async () => {
+      const errorToThrow = { message: 'some error' };
+      sandbox.stub(shoppingCartRepo, 'getCartById').rejects(errorToThrow);
+
+      const response = await testHelper.executeEvent({
+        httpMethod: 'PUT',
+        resourcePath: '/{cartId}/add',
+        pathParameters: 'someId',
+        body: JSON.stringify({
+          productId: 'product_91f12c45-5413-4283-bff0-76b7c5b0cf3a',
+          quantity: 2
+        })
+      });
+
+      expect(response).to.deep.equal({
+        isBase64Encoded: false,
+        headers: undefined,
+        statusCode: 500,
+        body: JSON.stringify(errorToThrow)
+      });
     });
   });
 });
